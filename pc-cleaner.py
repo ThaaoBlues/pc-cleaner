@@ -1,49 +1,59 @@
 from getpass import getuser
-import pyfiglet
 import os
+from utils import printer, PRINTER_MODE_HEADER, PRINTER_MODE_WARNING, PRINTER_MODE_INFO
+
+try:
+    from pyfiglet import figlet_format
+except ImportError:  # if not downloaded don't crash (because it is just style)
+    printer("Figlet isn't install but it is optional.", PRINTER_MODE_WARNING)
+
+    def figlet_format(message):
+        return message
+
 
 def main():
-    print(pyfiglet.figlet_format("PC-CLEANER"))
+    printer(figlet_format("PC-CLEANER"))
 
-    print(f"====================\n[+] Checking C:\\Users\\{getuser()}\\AppData\\Local\\Temp\n====================")
+    printer(f"Checking C:\\Users\\{getuser()}\\AppData\\Local\\Temp", PRINTER_MODE_HEADER | PRINTER_MODE_INFO)
     for ele in os.listdir(f"C:\\Users\\{getuser()}\\AppData\\Local\\Temp"):
-        print(f"removing : {ele}")
+        printer(f"Removing : {ele}")
         try:
             if os.path.isfile(ele):
                 os.remove(ele)
-            else :
+            else:
                 os.removedirs(ele)
         except:
-            print(f"[!] No right to remove {ele}, retry in admin privileges")
+            printer(f"No right to remove {ele}, retry in admin privileges", PRINTER_MODE_WARNING)
 
-    print(f"====================\n[+] Checking C:\Windows\Temp\n====================")
-    for ele in os.listdir(f"C:\Windows\Temp"):
-        print(f"removing : {ele}")
+    printer(f"Checking C:\\Windows\\Temp\n", PRINTER_MODE_HEADER | PRINTER_MODE_INFO)
+    for ele in os.listdir("C:\\Windows\\Temp"):
+        printer(f"Removing : {ele}")
         try:
             if os.path.isfile(ele):
                 os.remove(ele)
-            else :
+            else:
                 os.removedirs(ele)
         except:
-            print(f"[!] No right to remove {ele}, retry in admin privileges")
+            printer(f"No right to remove {ele}, retry in admin privileges", PRINTER_MODE_WARNING)
 
-
-    print(f"====================\n[+] Listing files wheighting over 1gb :\n====================")
+    printer(f"Listing files wheighting over 1gb :", PRINTER_MODE_HEADER | PRINTER_MODE_INFO)
 
     walk("C:\\")
-     print(f"====================\n[!] To make your PC run faster, try to check the app running in background parameters.\n====================")
-            
+    printer(f"To make your PC run faster, try to check the app running in background parameters.",
+            PRINTER_MODE_HEADER | PRINTER_MODE_WARNING)
+
 
 def walk(uri):
-    for root,directories,files in os.walk(uri):
+    for root, directories, files in os.walk(uri):
         for file in files:
-            if os.path.isfile(root+file):
-                    w = round(float(os.path.getsize(root+file)/10**9),2)
-                    if w > 1:
-                        print(f"{root+file}\n {file} wheight {w}gb")
-        
-        for directory in directories:
-            walk(str(root+"\\"+directory))
+            if os.path.isfile(root + file):
+                w = round(float(os.path.getsize(root + file) / 10 ** 9), 2)
+                if w > 1:
+                    print(f"{root + file}\n {file} weight {w}gb")
 
-if __name__=="__main__":
+        for directory in directories:
+            walk(str(root + "\\" + directory))
+
+
+if __name__ == "__main__":
     main()
