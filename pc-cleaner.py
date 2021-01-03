@@ -1,6 +1,6 @@
 import os
 
-import default
+import config
 from utils import printer, PRINTER_MODE_HEADER, PRINTER_MODE_WARNING, PRINTER_MODE_INFO, get_size
 
 try:
@@ -15,10 +15,10 @@ except ImportError:  # if not downloaded don't crash (because it is just style)
 
 class Cleaner:
     def __init__(self):
-        self.weight_limit, self.weight_unit = get_size(default.WEIGHT_NOTIFY_LIMIT)
+        self.weight_limit, self.weight_unit = get_size(config.WEIGHT_NOTIFY_LIMIT)
 
     def clean(self):
-        for path in default.TEMP_DIRS:
+        for path in config.TEMP_DIRS:
             printer(f"Checking {path}", PRINTER_MODE_HEADER | PRINTER_MODE_INFO)
             if os.path.exists(path):
                 for ele in os.listdir(path):
@@ -33,10 +33,10 @@ class Cleaner:
             else:
                 printer(f"File/folder not found: {path} !", PRINTER_MODE_WARNING)
 
-        printer(f"Listing files weighting over {default.WEIGHT_NOTIFY_LIMIT} :", PRINTER_MODE_HEADER | PRINTER_MODE_INFO)
+        printer(f"Listing files weighting over {config.WEIGHT_NOTIFY_LIMIT} :", PRINTER_MODE_HEADER | PRINTER_MODE_INFO)
 
-        for path in default.SEARCH_PATHS:
-            printer(f"Listing files weighting over {default.WEIGHT_NOTIFY_LIMIT} in {path}:",
+        for path in config.SEARCH_PATHS:
+            printer(f"Listing files weighting over {config.WEIGHT_NOTIFY_LIMIT} in {path}:",
                     PRINTER_MODE_HEADER | PRINTER_MODE_INFO)
             self.check_weight_directory(path)
 
